@@ -12,14 +12,11 @@ import userModel from "../models/user.model.js";
 import { messageByLanguage } from "../common/language/language.js";
 import OrderModel from "../models/order.model.js";
 import cartItemModel from "../models/cartItem.model.js";
-import { customAlphabet, nanoid } from 'nanoid'
+import { customAlphabet, nanoid } from "nanoid";
 
 export const getUniqueCode = () => {
   //
-  const random = customAlphabet(
-    "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    7
-  )();
+  const random = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 7)();
 
   // const timer = new Date().getTime().toString();
   // const preCode = timer.slice(0, timer.length - 9);
@@ -105,8 +102,7 @@ export async function createManyPostDomain(req, res, next) {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
 
-    const exchange = await UsdExchangeRateModel
-      .findOne()
+    const exchange = await UsdExchangeRateModel.findOne()
       .sort({ createdAt: -1 })
       .lean();
 
@@ -131,17 +127,29 @@ export async function createManyPostDomain(req, res, next) {
         const payload = {
           ...item,
           code: getUniqueCode(),
-          textlinkPrice: textlinkUSDPrice ? roundPrice(textlinkUSDPrice, exchange?.value) : textlinkPrice, 
+          textlinkPrice: textlinkUSDPrice
+            ? roundPrice(textlinkUSDPrice, exchange?.value)
+            : textlinkPrice,
           textlinkUSDPrice,
-          textlinkHomePrice: textlinkHomeUSDPrice ? roundPrice(textlinkHomeUSDPrice, exchange?.value) : textlinkHomePrice, 
+          textlinkHomePrice: textlinkHomeUSDPrice
+            ? roundPrice(textlinkHomeUSDPrice, exchange?.value)
+            : textlinkHomePrice,
           textlinkHomeUSDPrice,
-          textlinkHeaderPrice: textlinkHeaderUSDPrice ? roundPrice(textlinkHeaderUSDPrice, exchange?.value) : textlinkHeaderPrice, 
+          textlinkHeaderPrice: textlinkHeaderUSDPrice
+            ? roundPrice(textlinkHeaderUSDPrice, exchange?.value)
+            : textlinkHeaderPrice,
           textlinkHeaderUSDPrice,
-          textlinkFooterPrice: textlinkFooterUSDPrice ? roundPrice(textlinkFooterUSDPrice, exchange?.value) : textlinkFooterPrice, 
+          textlinkFooterPrice: textlinkFooterUSDPrice
+            ? roundPrice(textlinkFooterUSDPrice, exchange?.value)
+            : textlinkFooterPrice,
           textlinkFooterUSDPrice,
-          guestPostPrice: guestPostUSDPrice ? roundPrice(guestPostUSDPrice, exchange?.value) : guestPostPrice, 
+          guestPostPrice: guestPostUSDPrice
+            ? roundPrice(guestPostUSDPrice, exchange?.value)
+            : guestPostPrice,
           guestPostUSDPrice,
-          bannerPrice: bannerUSDPrice ? roundPrice(bannerUSDPrice, exchange?.value) : bannerPrice, 
+          bannerPrice: bannerUSDPrice
+            ? roundPrice(bannerUSDPrice, exchange?.value)
+            : bannerPrice,
           bannerUSDPrice,
           exchange: exchange?.value || 0,
           domain: domainValidated,
@@ -568,18 +576,17 @@ export async function updateManyDomain(req, res, next) {
     const reqUser = req.user;
 
     if (!data?.length) {
-      return next(createError(422, 'Không có dữ liệu'));
+      return next(createError(422, "Không có dữ liệu"));
     }
 
     for (const item of data) {
-
       if (!item?.code) {
-        return next(createError(422, 'Mã dịch vụ không hợp lệ'));
+        return next(createError(422, "Mã dịch vụ không hợp lệ"));
       }
 
-      const domainInfo = await DomainModel.findOne({ code: item?.code }).populate(
-        "creator"
-      );
+      const domainInfo = await DomainModel.findOne({
+        code: item?.code,
+      }).populate("creator");
 
       if (!domainInfo)
         return next(createError(404, messageByLanguage(req, "domainNotFound")));
@@ -595,8 +602,7 @@ export async function updateManyDomain(req, res, next) {
           )
         );
 
-      const exchange = await UsdExchangeRateModel
-        .findOne()
+      const exchange = await UsdExchangeRateModel.findOne()
         .sort({ createdAt: -1 })
         .lean();
 
@@ -617,17 +623,29 @@ export async function updateManyDomain(req, res, next) {
 
       const payload = {
         ...item,
-        textlinkPrice: textlinkUSDPrice ? roundPrice(textlinkUSDPrice, exchange?.value) : textlinkPrice, 
+        textlinkPrice: textlinkUSDPrice
+          ? roundPrice(textlinkUSDPrice, exchange?.value)
+          : textlinkPrice,
         textlinkUSDPrice,
-        textlinkHomePrice: textlinkHomeUSDPrice ? roundPrice(textlinkHomeUSDPrice, exchange?.value) : textlinkHomePrice, 
+        textlinkHomePrice: textlinkHomeUSDPrice
+          ? roundPrice(textlinkHomeUSDPrice, exchange?.value)
+          : textlinkHomePrice,
         textlinkHomeUSDPrice,
-        textlinkHeaderPrice: textlinkHeaderUSDPrice ? roundPrice(textlinkHeaderUSDPrice, exchange?.value) : textlinkHeaderPrice, 
+        textlinkHeaderPrice: textlinkHeaderUSDPrice
+          ? roundPrice(textlinkHeaderUSDPrice, exchange?.value)
+          : textlinkHeaderPrice,
         textlinkHeaderUSDPrice,
-        textlinkFooterPrice: textlinkFooterUSDPrice ? roundPrice(textlinkFooterUSDPrice, exchange?.value) : textlinkFooterPrice, 
+        textlinkFooterPrice: textlinkFooterUSDPrice
+          ? roundPrice(textlinkFooterUSDPrice, exchange?.value)
+          : textlinkFooterPrice,
         textlinkFooterUSDPrice,
-        guestPostPrice: guestPostUSDPrice ? roundPrice(guestPostUSDPrice, exchange?.value) : guestPostPrice, 
+        guestPostPrice: guestPostUSDPrice
+          ? roundPrice(guestPostUSDPrice, exchange?.value)
+          : guestPostPrice,
         guestPostUSDPrice,
-        bannerPrice: bannerUSDPrice ? roundPrice(bannerUSDPrice, exchange?.value) : bannerPrice, 
+        bannerPrice: bannerUSDPrice
+          ? roundPrice(bannerUSDPrice, exchange?.value)
+          : bannerPrice,
         bannerUSDPrice,
         exchange: exchange?.value || 0,
       };
@@ -644,7 +662,9 @@ export async function updateManyDomain(req, res, next) {
         );
 
         if (!domainUpdated) {
-          return next(createError(403, messageByLanguage(req, "domainNotFound")));
+          return next(
+            createError(403, messageByLanguage(req, "domainNotFound"))
+          );
         }
 
         // return res.status(200).json({
@@ -668,7 +688,7 @@ export async function updateManyDomain(req, res, next) {
         );
       }
     }
-    
+
     return res.status(200).json({
       status: RESULT.SUCCESS,
       message: "Cập nhật thành công",
@@ -906,39 +926,204 @@ export const updateExchangeDomain = async (exchange) => {
     for (const domain of domains) {
       const payload = {
         exchange,
-      }
+      };
 
       if (domain?.textlinkUSDPrice) {
         payload.textlinkPrice = roundPrice(domain?.textlinkUSDPrice, exchange);
       }
 
       if (domain?.textlinkHomeUSDPrice) {
-        payload.textlinkHomePrice = roundPrice(domain?.textlinkHomeUSDPrice, exchange);
+        payload.textlinkHomePrice = roundPrice(
+          domain?.textlinkHomeUSDPrice,
+          exchange
+        );
       }
 
       if (domain?.textlinkHeaderUSDPrice) {
-        payload.textlinkHeaderPrice = roundPrice(domain?.textlinkHeaderUSDPrice, exchange);
+        payload.textlinkHeaderPrice = roundPrice(
+          domain?.textlinkHeaderUSDPrice,
+          exchange
+        );
       }
 
-      if (domain?.textlinkFooterUSDPrice) { 
-        payload.textlinkFooterPrice = roundPrice(domain?.textlinkFooterUSDPrice, exchange);
+      if (domain?.textlinkFooterUSDPrice) {
+        payload.textlinkFooterPrice = roundPrice(
+          domain?.textlinkFooterUSDPrice,
+          exchange
+        );
       }
 
       if (domain?.guestPostUSDPrice) {
-        payload.guestPostPrice = roundPrice(domain?.guestPostUSDPrice, exchange);
+        payload.guestPostPrice = roundPrice(
+          domain?.guestPostUSDPrice,
+          exchange
+        );
       }
 
       if (domain?.bannerUSDPrice) {
         payload.bannerPrice = roundPrice(domain?.bannerUSDPrice, exchange);
       }
 
-
-      await DomainModel.updateOne(
-        { _id: domain?._id },
-        payload
-      )
+      await DomainModel.updateOne({ _id: domain?._id }, payload);
     }
   } catch (error) {
-    console.log('error: ', error);
+    console.log("error: ", error);
   }
 };
+
+export async function createManyPack(req, res, next) {
+  try {
+    const { data } = req.body;
+
+    if (req.user?.status !== 2) return next(createError(400, "failed"));
+
+    const currentDate = new Date();
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+
+    const exchange = await UsdExchangeRateModel.findOne()
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const list = await Promise.all(
+      data?.map(async (item) => {
+        const {
+          packageName,
+          orderGroup,
+          entityPrice,
+          entityPriceUSD,
+          backlinkPrice,
+          backlinkPriceUSD,
+        } = item;
+
+        const payload = {
+          ...item,
+          domain: packageName,
+          group: orderGroup,
+          code: getUniqueCode(),
+          entityPrice: entityPriceUSD
+            ? roundPrice(entityPriceUSD, exchange?.value)
+            : entityPrice,
+          entityPriceUSD,
+          backlinkPrice: backlinkPriceUSD
+            ? roundPrice(backlinkPriceUSD, exchange?.value)
+            : backlinkPrice,
+          backlinkPriceUSD,
+          typePack: "pack",
+          exchange: exchange?.value || 0,
+          creator: req?.user._id,
+          isDeleted: false,
+        };
+
+        return payload;
+      })
+    );
+
+    for (const item of list) {
+      const result = await DomainModel.create(item);
+    }
+
+    return res.status(201).json({
+      status: RESULT.SUCCESS,
+      message: "Đã đăng lên sàn vui lòng chờ duyệt",
+      data: null,
+    });
+  } catch (e) {
+    next(error);
+  }
+}
+
+export async function updateManyPack(req, res, next) {
+  try {
+    const { data } = req.body;
+    const reqUser = req.user;
+
+    if (!data?.length) {
+      return next(createError(422, "Không có dữ liệu"));
+    }
+
+    for (const item of data) {
+      if (!item?.code) {
+        return next(createError(422, "Mã dịch vụ không hợp lệ"));
+      }
+
+      const domainInfo = await DomainModel.findOne({
+        code: item?.code,
+      }).populate("creator");
+
+      if (!domainInfo)
+        return next(createError(404, messageByLanguage(req, "domainNotFound")));
+
+      if (item.status === 1 && domainInfo?.creator?.status === 1)
+        return next(
+          createError(
+            400,
+            messageByLanguage(
+              req,
+              "thisPartnerHasNotBeenApprovedContactAdminToApprovePartners"
+            )
+          )
+        );
+
+      const exchange = await UsdExchangeRateModel.findOne()
+        .sort({ createdAt: -1 })
+        .lean();
+
+      const {
+        packageName,
+        orderGroup,
+        entityPrice,
+        entityPriceUSD,
+        backlinkPrice,
+        backlinkPriceUSD,
+      } = item;
+
+      const payload = {
+        ...item,
+        domain: packageName,
+        orderGroup,
+        entityPrice: entityPrice
+          ? roundPrice(entityPriceUSD, exchange?.value)
+          : entityPrice,
+        entityPriceUSD,
+        backlinkPrice: backlinkPrice
+          ? roundPrice(backlinkPriceUSD, exchange?.value)
+          : backlinkPrice,
+        backlinkPriceUSD,
+      };
+
+      if (reqUser?.role.name !== "producer") {
+        const domainUpdated = await DomainModel.findOneAndUpdate(
+          { _id: domainInfo?._id },
+          payload,
+          { new: true }
+        );
+
+        if (!domainUpdated) {
+          return next(
+            createError(403, messageByLanguage(req, "domainNotFound"))
+          );
+        }
+      }
+      delete item.discount;
+      const domain = await DomainModel.findOneAndUpdate(
+        { _id: domainInfo?._id, creator: reqUser?._id },
+        payload,
+        {
+          new: true,
+        }
+      );
+
+      if (!domain) {
+        return next(
+          createError(403, messageByLanguage(req, "youDoNotHaveEditingRights"))
+        );
+      }
+    }
+
+    return res.status(200).json({
+      status: RESULT.SUCCESS,
+      message: "Cập nhật thành công",
+    });
+  } catch (e) {}
+}

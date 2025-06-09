@@ -47,6 +47,13 @@ router.post(
 );
 
 router.post(
+  "/create-many-pack",
+  AuthGuard,
+  Authorize(func, permissionFieldName.ADD),
+  DomainController.createManyPack
+)
+
+router.post(
   "/create-many-domain",
   AuthGuard,
   Authorize(func, permissionFieldName.ADD),
@@ -59,6 +66,13 @@ router.put(
   Authorize(func, permissionFieldName.EDIT),
   DomainController.updateManyDomain
 );
+
+router.put(
+  "/update-many-pack",
+  AuthGuard,
+  Authorize(func, permissionFieldName.EDIT),
+  DomainController.updateManyPack
+)
 
 router.get(
   "/paging-domain",

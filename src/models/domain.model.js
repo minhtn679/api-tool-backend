@@ -218,6 +218,24 @@ const DomainSchema = new mongoose.Schema(
     code: {
       type: String,
     },
+
+    entityPrice: {
+      type: Number, 
+      default: 0
+    },
+    entityPriceUSD: {
+      type: Number,
+      default: 0
+    },
+
+    backlinkPrice: {
+      type: Number,
+      default: 0
+    },
+    backlinkPriceUSD: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true }
 );
