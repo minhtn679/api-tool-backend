@@ -13,6 +13,7 @@ import { messageByLanguage } from "../common/language/language.js";
 import OrderModel from "../models/order.model.js";
 import cartItemModel from "../models/cartItem.model.js";
 import { customAlphabet, nanoid } from "nanoid";
+import { getPriceType } from "../helper/validate.domain.pack.js";
 
 export const getUniqueCode = () => {
   //
@@ -996,6 +997,13 @@ export async function createManyPack(req, res, next) {
           backlinkPriceUSD,
         } = item;
 
+        const type = getPriceType({
+          entityPrice,
+          entityPriceUSD,
+          backlinkPrice,
+          backlinkPriceUSD,
+        });
+
         const payload = {
           ...item,
           domain: packageName,
@@ -1015,6 +1023,20 @@ export async function createManyPack(req, res, next) {
           isDeleted: false,
         };
 
+        if (type === "entity") {
+          payload["type"] = "entity";
+          payload["pricePack"] = entityPriceUSD
+            ? roundPrice(entityPriceUSD, exchange?.value)
+            : entityPrice;
+        }
+
+        if (type === "backlink") {
+          payload["type"] = "backlink";
+          payload["pricePack"] = backlinkPriceUSD
+            ? roundPrice(backlinkPriceUSD, exchange?.value)
+            : backlinkPrice;
+        }
+
         return payload;
       })
     );
@@ -1028,7 +1050,7 @@ export async function createManyPack(req, res, next) {
       message: "Đã đăng lên sàn vui lòng chờ duyệt",
       data: null,
     });
-  } catch (e) {
+  } catch (error) {
     next(error);
   }
 }
@@ -1078,6 +1100,13 @@ export async function updateManyPack(req, res, next) {
         backlinkPriceUSD,
       } = item;
 
+      const type = getPriceType({
+        entityPrice,
+        entityPriceUSD,
+        backlinkPrice,
+        backlinkPriceUSD,
+      });
+
       const payload = {
         ...item,
         domain: packageName,
@@ -1090,7 +1119,22 @@ export async function updateManyPack(req, res, next) {
           ? roundPrice(backlinkPriceUSD, exchange?.value)
           : backlinkPrice,
         backlinkPriceUSD,
+        exchange: exchange?.value || 0,
       };
+
+      if (type === "entity") {
+        payload["type"] = "entity";
+        payload["pricePack"] = entityPriceUSD
+          ? roundPrice(entityPriceUSD, exchange?.value)
+          : entityPrice;
+      }
+
+      if (type === "backlink") {
+        payload["type"] = "backlink";
+        payload["pricePack"] = backlinkPriceUSD
+          ? roundPrice(backlinkPriceUSD, exchange?.value)
+          : backlinkPrice;
+      }
 
       if (reqUser?.role.name !== "producer") {
         const domainUpdated = await DomainModel.findOneAndUpdate(

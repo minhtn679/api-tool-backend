@@ -1,6 +1,6 @@
 import express from "express";
 import { AuthGuard, Authorize, RoleGuard } from "../middlewares/auth.js";
-import { CreateDomainDTO } from "../validator/domain.validator.js";
+import { CreateDomainDTO, validatePriceDomainPack } from "../validator/domain.validator.js";
 import * as DomainController from "../controllers/domain.controller.js";
 import {
   ROLES,
